@@ -206,7 +206,7 @@ namespace nstd {
         INT_TYPE capacity_ = 0;
         INT_TYPE size_ = 0;
 
-        queue_trivial() {}
+        queue_trivial() noexcept {}
 
         queue_trivial(const queue_trivial<T>& queue) = delete;
         queue_trivial<T>& operator=(const queue_trivial<T>& queue) = delete;
@@ -217,7 +217,7 @@ namespace nstd {
             free(buffer_);
         }
 
-        void should_reallocate() {
+        void should_reallocate() noexcept {
 
             if (capacity_ == size_) {
 
@@ -241,12 +241,12 @@ namespace nstd {
         }
     public:
 
-        void clear() {
+        void clear() noexcept {
             front_ = 0;
             back_ = 0;
         }
 
-        void push_back(const T& data) {
+        void push_back(const T& data) noexcept {
             should_reallocate();
 
             buffer_[back_] = data;
@@ -255,7 +255,7 @@ namespace nstd {
         }
 
         template<typename FuncInit>
-        T& emplace_back(FuncInit init) {
+        T& emplace_back(FuncInit init) noexcept {
             should_reallocate();
 
             T* data = &buffer_[back_];
@@ -267,7 +267,7 @@ namespace nstd {
             return *data;
         }
 
-        T& emplace_back() {
+        T& emplace_back() noexcept {
             should_reallocate();
 
             T* data = &buffer_[back_];
@@ -277,20 +277,20 @@ namespace nstd {
             return *data;
         }
 
-        T& front() {
+        T& front() noexcept {
             assert(size_ != 0);
 
             return buffer_[front_];
         }
 
-        T& back() {
+        T& back() noexcept {
             assert(size_ != 0);
             INT_TYPE last = (back_ + (size_ - 1)) % capacity_;
             return buffer_[last];
         }
 
         template<typename FuncDeinit>
-        void pop(FuncDeinit deinit) {
+        void pop(FuncDeinit deinit) noexcept {
             assert(size_ != 0);
 
             deinit(buffer_[front_]);
@@ -299,7 +299,7 @@ namespace nstd {
             --size_;
         }
 
-        void pop() {
+        void pop() noexcept {
             assert(size_ != 0);
 
             front_ = (front_ + 1) % capacity_;
@@ -314,14 +314,14 @@ namespace nstd {
             return size_ == 0;
         }
 
-        T& operator[](INT_TYPE i) {
+        T& operator[](INT_TYPE i) noexcept {
             assert(i >= 0 && i < size_);
 
             INT_TYPE index_rolling = (front_ + i) % capacity_;
             return buffer_[index_rolling];
         }
 
-        const T& operator[](INT_TYPE i) const {
+        const T& operator[](INT_TYPE i) const noexcept {
             assert(i >= 0 && i < size_);
 
             INT_TYPE index_rolling = (front_ + i) % capacity_;
