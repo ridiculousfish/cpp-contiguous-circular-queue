@@ -1,4 +1,3 @@
-
 int Example() {
 
 	// in the "nstd" namespace. 
@@ -86,14 +85,20 @@ int Example() {
 	nstd::queue_trivial<TrivialData> trivial;
 
 	// we choose when to initialise rather than there being an implicit init
-	trivial.emplace_back(); // performant because trivial queue assumes no constructor
 	trivial.emplace_back([](TrivialData& data) { data.a = nullptr; data.c = 'a'; data.is_init = true; }); // but we can still have one if we want too
 
 	// same for destruction/deinit
-	trivial.pop();
 	trivial.pop([](TrivialData& data) { data.a = nullptr; data.c = 'n'; data.is_init = false; });
 
 	// although it's just a long winded way of initialising the data, useful for semi-simple types
+
+	// explicit copies might be good aswell?
+	TrivialData some_data;
+	int* inta = new int;
+	some_data.a = inta;
+	trivial.push_back(some_data); // does a trivial copy
+	trivial.push_back(some_data, [](TrivialData& dest, TrivialData& srce) { dest.a = srce.a; srce.a = nullptr; }); // does an explicit move/copy
+
 
 	return false;
 }
