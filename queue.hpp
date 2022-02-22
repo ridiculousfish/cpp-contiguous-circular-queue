@@ -254,6 +254,17 @@ namespace nstd {
             ++size_;
         }
 
+        template<typename FuncCopy>
+        void push_back(T& data, FuncCopy copy) noexcept {
+            should_reallocate();
+
+            copy(buffer_[back_], data);
+
+          //  buffer_[back_] = data;
+            back_ = (back_ + 1) % capacity_;
+            ++size_;
+        }
+
         template<typename FuncInit>
         T& emplace_back(FuncInit init) noexcept {
             should_reallocate();
